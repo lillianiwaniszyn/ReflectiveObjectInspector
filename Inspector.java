@@ -17,7 +17,16 @@ public class Inspector {
 		System.out.println(immediateSuperClass);
 		//name of interfaces implemented
 		Class[] interfaces = classObj.getInterfaces();
-		System.out.println("Interfaces = " + Arrays.asList(interfaces));
+		System.out.print("The interfaces implemented by this class are: ");
+		for (Class j : interfaces) {
+			System.out.print(j.getName() + ",");
+		}
+		inspectMethod(obj);
+
+		
+	}
+	public void inspectMethod(Object obj) {
+		Class classObj = obj.getClass();
 		//name of methods implemented
 		Method[] methods = classObj.getMethods();
 		for (Method i : methods) {
