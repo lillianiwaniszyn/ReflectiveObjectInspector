@@ -1,8 +1,8 @@
 package a2;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 public class Inspector {
 	public void inspect(Object obj, boolean recursive) {
@@ -22,6 +22,7 @@ public class Inspector {
 			System.out.print(j.getName() + ",");
 		}
 		inspectMethod(obj);
+		inspectConstructors(obj);
 
 		
 	}
@@ -55,6 +56,27 @@ public class Inspector {
 			System.out.print(" Modifiers: " +  sModifiers);
 			
 
+		}
+		
+	}
+	public void inspectConstructors(Object obj) {
+		Class classObj = obj.getClass();
+		System.out.println("\n\nThe constructors in this class are:");
+		Constructor[] constructors = classObj.getConstructors();
+		for (Constructor x : constructors) {
+			System.out.println();
+			System.out.println(x.getName());
+			//get parameter types
+			Class [] parameterTypes = x.getParameterTypes();
+			//get modifiers
+			int modifiers = x.getModifiers();
+			String sModifiers = Modifier.toString(modifiers);
+			System.out.print("Parameter types: ");
+			for (Class c : parameterTypes) {
+				System.out.print(c.getName());
+			}
+			System.out.print(" Modifiers: " +  sModifiers);
+			
 		}
 		
 	}
