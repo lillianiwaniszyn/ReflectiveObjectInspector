@@ -1,6 +1,7 @@
 package a2;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 public class Inspector {
@@ -21,13 +22,29 @@ public class Inspector {
 		Method[] methods = classObj.getMethods();
 		for (Method i : methods) {
 			System.out.println();
-			Class [] exception = i.getExceptionTypes();		
+			//get exception types
+			Class [] exception = i.getExceptionTypes();	
+			//get parameter types
+			Class[] parameterTypes = i.getParameterTypes();
+			//get return type
+			Class returnType = i.getReturnType();
+			//get modifiers
+			int modifiers = i.getModifiers();
+			String sModifiers = Modifier.toString(modifiers);
 			System.out.print("Method: ");
 			System.out.print(i.getName());
+			//loop through exceptions
 			for (Class j : exception) {
-				System.out.print(" Exception Name: ");
+				System.out.print(", Exception Name: ");
 				System.out.print(j.getName());
 			}
+			System.out.print(", Paramter Types: ");
+			for (Class j : parameterTypes) {
+				System.out.print(j.getName() + ",");
+			}
+			System.out.print(" Return Type: " +  returnType.getName());
+			System.out.print(" Modifiers: " +  sModifiers);
+			
 
 		}
 		
