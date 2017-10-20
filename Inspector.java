@@ -1,5 +1,6 @@
 package a2;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -7,7 +8,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 public class Inspector {
-	public void inspect(Object obj, boolean recursive) {
+	public void inspect(Object obj, boolean recursive) throws IllegalArgumentException, IllegalAccessException {
 		//name of declaring class
 		Class classObj = obj.getClass();
 		String declaringClass = obj.getClass().getSimpleName();
@@ -65,7 +66,7 @@ public class Inspector {
 	public void inspectConstructors(Object obj) {
 		Class classObj = obj.getClass();
 		System.out.println("\n\nThe constructors in this class are:");
-		Constructor[] constructors = classObj.getConstructors();
+		Constructor[] constructors = classObj.getDeclaredConstructors();
 		for (Constructor x : constructors) {
 			System.out.println();
 			System.out.println(x.getName());
@@ -83,9 +84,10 @@ public class Inspector {
 		}
 		
 	}
-	public void inspectFields(Object obj) {
+	public void inspectFields(Object obj) throws IllegalArgumentException, IllegalAccessException {
 		Class classObj = obj.getClass();
 		System.out.println("\n\nThe fields in this class are:");
+		System.out.println();
 		Field[] fields = classObj.getDeclaredFields();
 		for (Field x : fields) {
 			System.out.print(x.getName());
@@ -93,8 +95,25 @@ public class Inspector {
 			Type type = x.getGenericType();
 			String sModifiers = Modifier.toString(modifiers);
 			System.out.print(", " + type.getTypeName());
-			System.out.println(", " + sModifiers);
+			System.out.print(", " + sModifiers);
+			if (x.getType().isPrimitive()){
+				System.out.println(", " + x.getType());
+			}
+			else {
+				fieldNonPrimitive(x, obj);
+			}
+			
 		
+		}
+		
+		
+		
+	}
+	public void fieldNonPrimitive(Field fields, Object obj) throws IllegalArgumentException, IllegalAccessException {
+		if (fields.getType().isArray()) {
+			fields.setAccessible(true);
+			System.out.println("This field is an array");
+			System.out.println("Array length is:" + Array.getLength(fields.get(obj)));
 		}
 		
 		
