@@ -1,8 +1,10 @@
 package a2;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 
 public class Inspector {
 	public void inspect(Object obj, boolean recursive) {
@@ -23,13 +25,14 @@ public class Inspector {
 		}
 		inspectMethod(obj);
 		inspectConstructors(obj);
+		inspectFields(obj);
 
 		
 	}
 	public void inspectMethod(Object obj) {
 		Class classObj = obj.getClass();
 		//name of methods implemented
-		Method[] methods = classObj.getMethods();
+		Method[] methods = classObj.getDeclaredMethods();
 		for (Method i : methods) {
 			System.out.println();
 			//get exception types
@@ -78,6 +81,22 @@ public class Inspector {
 			System.out.print(" Modifiers: " +  sModifiers);
 			
 		}
+		
+	}
+	public void inspectFields(Object obj) {
+		Class classObj = obj.getClass();
+		System.out.println("\n\nThe fields in this class are:");
+		Field[] fields = classObj.getDeclaredFields();
+		for (Field x : fields) {
+			System.out.print(x.getName());
+			int modifiers = x.getModifiers();
+			Type type = x.getGenericType();
+			String sModifiers = Modifier.toString(modifiers);
+			System.out.print(", " + type.getTypeName());
+			System.out.println(", " + sModifiers);
+		
+		}
+		
 		
 	}
 
