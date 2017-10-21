@@ -158,7 +158,7 @@ public class Inspector {
 	}
 	public void inspectFields(Object obj, Class classObj, Vector objects) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println("\n\nThe fields in this class are:");
-		System.out.println();
+		//System.out.println();
 		Field[] fields = classObj.getDeclaredFields();
 		System.out.println("Number of fields: " +fields.length);
 		for (Field x : fields) {
