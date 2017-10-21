@@ -21,6 +21,21 @@ public class Inspector {
 		System.out.print("The name of the immediate superclass is: ");
 		System.out.println(immediateSuperClass);
 		//name of interfaces implemented
+
+		inspectInterfaces(obj, classObj);
+		inspectMethods(obj, classObj);
+		inspectConstructors(obj, classObj);
+		if(recursive == false) {
+			inspectFields(obj, false);
+		}
+		else if(recursive == true) {
+			inspectFields(obj, true);
+		}
+
+
+		
+	}
+	public void inspectInterfaces(Object obj, Class classObj) {
 		Class[] interfaces = classObj.getInterfaces();
 		if (interfaces.length > 0) {
 			System.out.print("The interfaces implemented by this class are: ");
@@ -35,17 +50,6 @@ public class Inspector {
 		else {
 			System.out.println("No interfaces found");
 		}
-
-		inspectMethods(obj, classObj);
-		inspectConstructors(obj, classObj);
-		if(recursive == false) {
-			inspectFields(obj, false);
-		}
-		else if(recursive == true) {
-			inspectFields(obj, true);
-		}
-
-
 		
 	}
 
