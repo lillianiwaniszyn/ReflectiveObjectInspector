@@ -27,13 +27,15 @@ public class Inspector {
 		inspectMethods(obj, classObj);
 		inspectConstructors(obj, classObj);
 		inspectFields(obj, classObj, objects);
-		if ((classObj.getSuperclass() != null) && (classObj.getSuperclass() != Object.class)) {
-			inspectSuperclass(obj, classObj, objects);
-		}
-
 		if (recursive==true) {
 			inspectFieldClasses(obj, classObj, objects, recursive);
 		}
+		while ((classObj.getSuperclass() != null)&& (classObj.getSuperclass() != Object.class)) {
+			inspectSuperclass(obj, classObj, objects);
+			classObj = classObj.getSuperclass();
+		}
+
+
 			
 
 
@@ -41,8 +43,9 @@ public class Inspector {
 	}
 	private void inspectSuperclass(Object obj, Class classObj, Vector objects) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println();
-		System.out.println("'" + classObj.getSimpleName() + "' Superclass:");
+		System.out.println("'" + classObj.getSimpleName() + "' Superclass: " + classObj.getSuperclass().getSimpleName());
 		Class superclass = classObj.getSuperclass();
+		inspectInterfaces(obj, superclass); 
 		inspectMethods(obj, superclass);
 		inspectConstructors(obj, superclass);
 		inspectFields(obj, superclass, new Vector());
@@ -68,15 +71,16 @@ public class Inspector {
 				exp.printStackTrace();
 			}
 		}
-		System.out.println("End of " + classObj.getSimpleName()+ "field classes");
+		System.out.println("End of " + classObj.getSimpleName()+ " field classes");
 	}
 		
 	
 	public void inspectInterfaces(Object obj, Class classObj) {
+		//to do... get superinterface
 		Class[] interfaces = classObj.getInterfaces();
 		if (interfaces.length > 0) {
 			
-			System.out.println("The interfaces implemented by this class are: ");
+			System.out.println("The interfaces implemented by " + classObj.getSimpleName() +" are: ");
 			for (Class j : interfaces) {
 				System.out.println(j.getName());
 				//now we need to inspect the interfaces
@@ -94,7 +98,7 @@ public class Inspector {
 
 	public void inspectMethods(Object obj, Class classObj) {
 		Method[] methods = classObj.getDeclaredMethods();
-		System.out.println("The methods in " + classObj.getName() + " are: ");
+		System.out.println("The methods in " + classObj.getSimpleName() + " are: ");
 		if (methods.length >0) {
 			for (Method i : methods) {
 				//System.out.println();
@@ -131,7 +135,7 @@ public class Inspector {
 		
 	}
 	public void inspectConstructors(Object obj, Class classObj) {
-		System.out.println("The constructors in " + classObj.getName() + " are: ");
+		System.out.println("The constructors in " + classObj.getSimpleName() + " are: ");
 		Constructor[] constructors = classObj.getDeclaredConstructors();
 		if (constructors.length >0 ) {
 			for (Constructor x : constructors) {
@@ -169,9 +173,9 @@ public class Inspector {
 			}
 				//now print the info
 			if (x.getType().isArray()) {
-				System.out.println("Field: '" + x.getName() + "'\n\t-Type: " + x.getType().getComponentType() + "\n\t-Modifier: " + Modifier.toString(x.getModifiers()));
+				System.out.println("Field: '" + x.getName() + "'\n\tType: " + x.getType().getComponentType() + "\n\tModifier: " + Modifier.toString(x.getModifiers()));
 			} else {
-				System.out.println("Field: '" + x.getName() + "' = " + x.get(obj) + "\n\t-Type: " + x.getType()+ "\n\t-Modifier: "+ Modifier.toString(x.getModifiers()));
+				System.out.println("Field: '" + x.getName() + "' = " + x.get(obj) + "\n\tType: " + x.getType()+ "\n\tModifier: "+ Modifier.toString(x.getModifiers()));
 			}		
 		}
 		
