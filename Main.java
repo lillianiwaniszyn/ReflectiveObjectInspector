@@ -4,8 +4,8 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Inspector inspect = new Inspector(); 
-		ClassB a = new ClassB();
-		inspect.inspect(a, false);
+		ClassD a = new ClassD();
+		inspect.inspect(a, true);
 
 	}
 

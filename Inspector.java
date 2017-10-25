@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -31,8 +32,10 @@ public class Inspector {
 			inspectFieldClasses(obj, classObj, objects, recursive);
 		}
 		while ((classObj.getSuperclass() != null)&& (classObj.getSuperclass() != Object.class)) {
-			inspectSuperclass(obj, classObj, objects);
+			inspectSuperclass(obj, classObj, objects, recursive);
+			
 			classObj = classObj.getSuperclass();
+			//inspect(classObj, false);
 		}
 
 
@@ -41,19 +44,25 @@ public class Inspector {
 
 		
 	}
-	private void inspectSuperclass(Object obj, Class classObj, Vector objects) throws IllegalArgumentException, IllegalAccessException {
+	private void inspectSuperclass(Object obj, Class classObj, Vector objects, Boolean recursive) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println();
+		Class superClass =classObj.getSuperclass();
 		System.out.println("'" + classObj.getSimpleName() + "' Superclass: " + classObj.getSuperclass().getSimpleName());
 		Class superclass = classObj.getSuperclass();
+		System.out.println(classObj.getSuperclass().getSimpleName() + "'s" + " SuperClass is " +superClass.getSuperclass().getSimpleName());
 		inspectInterfaces(obj, superclass); 
 		inspectMethods(obj, superclass);
 		inspectConstructors(obj, superclass);
 		inspectFields(obj, superclass, new Vector());
+		if (recursive==true) {
+			inspectFieldClasses(obj, classObj, objects, recursive);
+		}
+		
 		
 	}
 	private void inspectFieldClasses(Object obj, Class classObj, Vector objects, boolean recursive) {
 		if (objects.size() > 0) {
-			System.out.println("'" + classObj.getSimpleName() + "' Field Classses are:");
+			//System.out.println("'" + classObj.getSimpleName() + "' Field Classses are:");
 		}
 		Enumeration e = objects.elements();
 		while (e.hasMoreElements()) {
@@ -76,19 +85,18 @@ public class Inspector {
 		
 	
 	public void inspectInterfaces(Object obj, Class classObj) {
-		//to do... get superinterface
 		Class[] interfaces = classObj.getInterfaces();
 		if (interfaces.length > 0) {
 			
-			System.out.println("The interfaces implemented by " + classObj.getSimpleName() +" are: ");
+			System.out.print("The interfaces implemented by " + classObj.getSimpleName() +" are: ");
 			for (Class j : interfaces) {
 				System.out.println(j.getName());
 				//now we need to inspect the interfaces
-				System.out.println("Inspecting " + j.getSimpleName() + "...");
-				inspectMethods(obj, j);
-				inspectConstructors(obj, j);
+				//System.out.println("Inspecting " + j.getSimpleName() + "...");
+				//inspectMethods(obj, j);
+				//inspectConstructors(obj, j);
 			}
-			System.out.println("---End of " + classObj.getSimpleName()+ " interfaces---");
+			//System.out.println("---End of " + classObj.getSimpleName()+ " interfaces---");
 		}
 		else {
 			System.out.println("No interfaces found");
@@ -118,10 +126,16 @@ public class Inspector {
 					System.out.print(", Exception Name: ");
 					System.out.print(j.getName());
 				}
-				System.out.print(", Paramter Types: ");
-				for (Class j : parameterTypes) {
-					System.out.print(j.getName() + ",");
+				System.out.print(", Parameter Types: ");
+				if(parameterTypes.length > 0) {
+					for (Class j : parameterTypes) {
+						System.out.print(j.getName() + ",");
+					}
 				}
+				else {
+					System.out.print("No parameters");
+				}
+
 				System.out.print(" Return Type: " +  returnType.getName());
 				System.out.println(" Modifiers: " +  sModifiers);
 				
@@ -135,22 +149,27 @@ public class Inspector {
 		
 	}
 	public void inspectConstructors(Object obj, Class classObj) {
-		System.out.println("The constructors in " + classObj.getSimpleName() + " are: ");
+		System.out.println("\nThe constructors in " + classObj.getSimpleName() + " are: ");
 		Constructor[] constructors = classObj.getDeclaredConstructors();
 		if (constructors.length >0 ) {
 			for (Constructor x : constructors) {
-				System.out.println();
-				System.out.println(x.getName());
+				System.out.print("Constructor Name: " + x.getName());
 				//get parameter types
 				Class [] parameterTypes = x.getParameterTypes();
 				//get modifiers
 				int modifiers = x.getModifiers();
 				String sModifiers = Modifier.toString(modifiers);
-				System.out.print("Parameter types: ");
-				for (Class c : parameterTypes) {
-					System.out.print(c.getName());
+				System.out.print(" Parameter types: ");
+				if (parameterTypes.length > 0) {
+					for (Class c : parameterTypes) {
+						System.out.print(c.getSimpleName());
+					}
 				}
-				System.out.print(" Modifiers: " +  sModifiers);
+				else {
+					System.out.print(" No parameters");
+				}
+
+				System.out.println(" Modifiers: " +  sModifiers);
 				
 			}
 		}
@@ -174,6 +193,8 @@ public class Inspector {
 				//now print the info
 			if (x.getType().isArray()) {
 				System.out.println("Field: '" + x.getName() + "'\n\tType: " + x.getType().getComponentType() + "\n\tModifier: " + Modifier.toString(x.getModifiers()));
+			//deal with array length here
+				System.out.println("Array found! Length = " + Array.getLength(x.get(obj)));
 			} else {
 				System.out.println("Field: '" + x.getName() + "' = " + x.get(obj) + "\n\tType: " + x.getType()+ "\n\tModifier: "+ Modifier.toString(x.getModifiers()));
 			}		
