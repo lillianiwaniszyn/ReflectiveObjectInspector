@@ -23,7 +23,6 @@ public class Inspector {
 		System.out.print("The name of the immediate superclass is: ");
 		System.out.println(immediateSuperClass);
 		//name of interfaces implemented
-
 		inspectInterfaces(obj, classObj);
 		inspectMethods(obj, classObj);
 		inspectConstructors(obj, classObj);
@@ -33,16 +32,8 @@ public class Inspector {
 		}
 		while ((classObj.getSuperclass() != null)&& (classObj.getSuperclass() != Object.class)) {
 			inspectSuperclass(obj, classObj, objects, recursive);
-			
 			classObj = classObj.getSuperclass();
-			//inspect(classObj, false);
-		}
-
-
-			
-
-
-		
+		}	
 	}
 	private void inspectSuperclass(Object obj, Class classObj, Vector objects, Boolean recursive) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println();
@@ -62,13 +53,11 @@ public class Inspector {
 	}
 	private void inspectFieldClasses(Object obj, Class classObj, Vector objects, boolean recursive) {
 		if (objects.size() > 0) {
-			//System.out.println("'" + classObj.getSimpleName() + "' Field Classses are:");
 		}
 		Enumeration e = objects.elements();
 		while (e.hasMoreElements()) {
 			Field f = (Field) e.nextElement();
 			System.out.println("Inspecting Field: " + f.getName());
-
 			try {
 				System.out.println("---");
 				inspect(f.get(obj), recursive);
@@ -87,21 +76,14 @@ public class Inspector {
 	public void inspectInterfaces(Object obj, Class classObj) {
 		Class[] interfaces = classObj.getInterfaces();
 		if (interfaces.length > 0) {
-			
 			System.out.print("The interfaces implemented by " + classObj.getSimpleName() +" are: ");
 			for (Class j : interfaces) {
 				System.out.println(j.getName());
-				//now we need to inspect the interfaces
-				//System.out.println("Inspecting " + j.getSimpleName() + "...");
-				//inspectMethods(obj, j);
-				//inspectConstructors(obj, j);
 			}
-			//System.out.println("---End of " + classObj.getSimpleName()+ " interfaces---");
 		}
 		else {
 			System.out.println("No interfaces found");
-		}
-		
+		}	
 	}
 
 	public void inspectMethods(Object obj, Class classObj) {
@@ -109,7 +91,6 @@ public class Inspector {
 		System.out.println("The methods in " + classObj.getSimpleName() + " are: ");
 		if (methods.length >0) {
 			for (Method i : methods) {
-				//System.out.println();
 				//get exception types
 				Class [] exception = i.getExceptionTypes();	
 				//get parameter types
@@ -135,18 +116,13 @@ public class Inspector {
 				else {
 					System.out.print("No parameters");
 				}
-
 				System.out.print(" Return Type: " +  returnType.getName());
 				System.out.println(" Modifiers: " +  sModifiers);
-				
-
 			}
-
 		}
 		else {
 			System.out.println("No methods found");
-		}
-		
+		}	
 	}
 	public void inspectConstructors(Object obj, Class classObj) {
 		System.out.println("\nThe constructors in " + classObj.getSimpleName() + " are: ");
@@ -170,7 +146,6 @@ public class Inspector {
 				}
 
 				System.out.println(" Modifiers: " +  sModifiers);
-				
 			}
 		}
 		else {
@@ -190,11 +165,17 @@ public class Inspector {
 			if (!x.getType().isPrimitive()) {
 				objects.addElement(x);
 			}
-				//now print the info
 			if (x.getType().isArray()) {
 				System.out.println("Field: '" + x.getName() + "'\n\tType: " + x.getType().getComponentType() + "\n\tModifier: " + Modifier.toString(x.getModifiers()));
-			//deal with array length here
 				System.out.println("Array found! Length = " + Array.getLength(x.get(obj)));
+				System.out.println("Printing array content...");
+				Object array = x.get(obj);
+				  int length = Array.getLength(array);
+				  for (int i = 0; i < length; i++) {
+				    System.out.print(Array.get(array, i) + " ");
+				  }
+				  System.out.println();
+
 			} else {
 				System.out.println("Field: '" + x.getName() + "' = " + x.get(obj) + "\n\tType: " + x.getType()+ "\n\tModifier: "+ Modifier.toString(x.getModifiers()));
 			}		
@@ -203,17 +184,7 @@ public class Inspector {
 		
 		
 	}
-	public void fieldNonPrimitive(Field fields, Object obj) throws IllegalArgumentException, IllegalAccessException {
-		if (fields.getType().isArray()) {
-			fields.setAccessible(true);
-			System.out.println(" ...This field is an array");
-			System.out.println("Array length is:" + Array.getLength(fields.get(obj)));
-			//to do
-			// iterate through the array and print
-		}
-		
-		
-	}
+
 	private void inspectFieldsRecursive(Object obj) throws IllegalArgumentException, IllegalAccessException {
 		Class classObj = obj.getClass();
 		System.out.println("\n\nThe fields in this class are:");
