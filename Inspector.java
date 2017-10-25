@@ -73,20 +73,24 @@ public class Inspector {
 	}
 		
 	
-	public void inspectInterfaces(Object obj, Class classObj) {
+	public Vector<String> inspectInterfaces(Object obj, Class classObj) {
+		Vector v = new Vector();
 		Class[] interfaces = classObj.getInterfaces();
 		if (interfaces.length > 0) {
 			System.out.print("The interfaces implemented by " + classObj.getSimpleName() +" are: ");
 			for (Class j : interfaces) {
 				System.out.println(j.getName());
+				v.add(j.getName());
 			}
 		}
 		else {
 			System.out.println("No interfaces found");
-		}	
+		}
+		return v;	
 	}
 
-	public void inspectMethods(Object obj, Class classObj) {
+	public Vector<String> inspectMethods(Object obj, Class classObj) {
+		Vector m = new Vector();
 		Method[] methods = classObj.getDeclaredMethods();
 		System.out.println("The methods in " + classObj.getSimpleName() + " are: ");
 		if (methods.length >0) {
@@ -102,34 +106,42 @@ public class Inspector {
 				String sModifiers = Modifier.toString(modifiers);
 				System.out.print("Method: ");
 				System.out.print(i.getName());
+				m.add(i.getName());
 				//loop through exceptions
-				for (Class j : exception) {
+				for (Class j : exception) { // fix this to say no exceptions
 					System.out.print(", Exception Name: ");
 					System.out.print(j.getName());
+					m.add(j.getName());
 				}
 				System.out.print(", Parameter Types: ");
 				if(parameterTypes.length > 0) {
 					for (Class j : parameterTypes) {
 						System.out.print(j.getName() + ",");
+						m.add(j.getName());
 					}
 				}
 				else {
 					System.out.print("No parameters");
 				}
 				System.out.print(" Return Type: " +  returnType.getName());
+				m.add(returnType.getName());
 				System.out.println(" Modifiers: " +  sModifiers);
+				m.add(sModifiers);
 			}
 		}
 		else {
 			System.out.println("No methods found");
-		}	
+		}
+		return m;	
 	}
-	public void inspectConstructors(Object obj, Class classObj) {
+	public Vector<String> inspectConstructors(Object obj, Class classObj) {
+		Vector cons = new Vector();
 		System.out.println("\nThe constructors in " + classObj.getSimpleName() + " are: ");
 		Constructor[] constructors = classObj.getDeclaredConstructors();
 		if (constructors.length >0 ) {
 			for (Constructor x : constructors) {
 				System.out.print("Constructor Name: " + x.getName());
+				cons.add(x.getName());
 				//get parameter types
 				Class [] parameterTypes = x.getParameterTypes();
 				//get modifiers
@@ -139,6 +151,7 @@ public class Inspector {
 				if (parameterTypes.length > 0) {
 					for (Class c : parameterTypes) {
 						System.out.print(c.getSimpleName());
+						cons.add(c.getSimpleName());
 					}
 				}
 				else {
@@ -146,17 +159,18 @@ public class Inspector {
 				}
 
 				System.out.println(" Modifiers: " +  sModifiers);
+				cons.addElement(sModifiers);
 			}
 		}
 		else {
 			System.out.println("No constructors found");
 		}
+		return cons;
 
 		
 	}
 	public void inspectFields(Object obj, Class classObj, Vector objects) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println("\n\nThe fields in this class are:");
-		//System.out.println();
 		Field[] fields = classObj.getDeclaredFields();
 		System.out.println("Number of fields: " +fields.length);
 		for (Field x : fields) {
@@ -185,7 +199,7 @@ public class Inspector {
 		
 	}
 
-	private void inspectFieldsRecursive(Object obj) throws IllegalArgumentException, IllegalAccessException {
+	public void inspectFieldsRecursive(Object obj) throws IllegalArgumentException, IllegalAccessException {
 		Class classObj = obj.getClass();
 		System.out.println("\n\nThe fields in this class are:");
 		System.out.println();

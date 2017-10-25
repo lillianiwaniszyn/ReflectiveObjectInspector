@@ -3,53 +3,57 @@ package a2;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.util.Vector;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class InspectorTest {
-    Object classDObj;
     Object classAObj;
-    Class testClass;
-    
-    public InspectorTest()
+    Object classBObj;
+    Inspector testClass;
+    @Before
+    public void setUp() throws Exception
     {
-            classDObj = new ClassD();
             classAObj = new ClassA();
+            classBObj = new ClassB();
+            testClass = new Inspector();
+            
     }
 	@Test
-	public void testInspectMethods() {
-		Object classDObj = new ClassD();
-		Object classAObj = new ClassA();
-		Method[] methodsD = classDObj.getClass().getDeclaredMethods();
-		Method[] methodsA = classAObj.getClass().getDeclaredMethods();
-        int resultD = methodsD.length;
-        int resultA = methodsA.length;
-        assertEquals( resultD, 2); // check to see if we have 2 declared methods in Class D
-        assertEquals( resultA, 5); // check to see if we have 5 declared methods in Class A
-        String methodName = methodsD[0].getName();
-        assertEquals(methodName,"toString"); //check to see if first method in Class D is toString
-        resultD = methodsD[0].getModifiers();
-        assertEquals(resultD,1); // check to see if method is public
-        methodName = methodsD[0].getReturnType().getSimpleName();
-        assertEquals(methodName,"String"); // check to see if method returns String
-		Class[] parameters = methodsD[0].getParameterTypes();
-		String params = "";
-		if (parameters.length == 0) //if method has zero params, set to none
-			params = "none";
-		else
-			for (Class x : parameters) {
-				params += x.getSimpleName() + " "; // else get the name
-			}
-        assertEquals(params,"none"); // check to see if method has no parameters
-		Class[] exceptions = methodsD[0].getExceptionTypes();
-		String exception = "";
-		if (exceptions.length == 0)
-			exception = "none";
-		else
-			for (Class aException : exceptions) {
-				exception += aException.getSimpleName() + " ";
-			}
-		assertEquals(exception,"none"); //check to see that we have no exceptions 
+	public void testInspectInterfaces() {
+		Class classObj = classAObj.getClass();
+		Vector <String> interfaces = testClass.inspectInterfaces(classAObj, classObj);
+		// test to see if first interface in Class A is Serializable 
+        assertEquals( interfaces.firstElement(), "java.io.Serializable");
+        //check to see if second or last interface implemented is runnable 
+        assertEquals( interfaces.lastElement(), "java.lang.Runnable");
 	}
+	
+	@Test
+	public void testInspectedMethods() {
+		Class classObj = classAObj.getClass();
+		Vector <String> methods = testClass.inspectMethods(classAObj, classObj);
+		// test to see if Method in class A is run
+        assertEquals( methods.firstElement(), "run");
+        //check to see if return type is void for run since it throws no exceptions
+        assertEquals(methods.get(1), "void");
+        // check to see if 3rd method is getVal
+        assertEquals( methods.get(11), "getVal"); 
+
+	}
+	@Test
+	public void testInspectedContructors() {
+		Class classObj = classAObj.getClass();
+		Vector <String> constructors = testClass.inspectConstructors(classAObj, classObj);
+        // check to see if name of first constructor is ClassA
+		assertEquals( constructors.firstElement(), "a2.ClassA");
+		//check to see if second constructor takes an int as parameter
+		assertEquals(constructors.get(3), "int");
+		// check to see if second constructor is public
+        assertEquals( constructors.lastElement(), "public");
+
+	}
+	
 
 }
