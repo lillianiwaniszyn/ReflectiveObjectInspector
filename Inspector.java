@@ -23,9 +23,9 @@ public class Inspector {
 		System.out.print("The name of the immediate superclass is: ");
 		System.out.println(immediateSuperClass);
 		//name of interfaces implemented
-		inspectInterfaces(obj, classObj);
-		inspectMethods(obj, classObj);
-		inspectConstructors(obj, classObj);
+		inspectInterfaces(classObj);
+		inspectMethods(classObj);
+		inspectConstructors(classObj);
 		inspectFields(obj, classObj, objects);
 		if (recursive==true) {
 			inspectFieldClasses(obj, classObj, objects, recursive);
@@ -41,9 +41,9 @@ public class Inspector {
 		System.out.println("'" + classObj.getSimpleName() + "' Superclass: " + classObj.getSuperclass().getSimpleName());
 		Class superclass = classObj.getSuperclass();
 		System.out.println(classObj.getSuperclass().getSimpleName() + "'s" + " SuperClass is " +superClass.getSuperclass().getSimpleName());
-		inspectInterfaces(obj, superclass); 
-		inspectMethods(obj, superclass);
-		inspectConstructors(obj, superclass);
+		inspectInterfaces(superclass); 
+		inspectMethods(superclass);
+		inspectConstructors(superclass);
 		inspectFields(obj, superclass, new Vector());
 		if (recursive==true) {
 			inspectFieldClasses(obj, classObj, objects, recursive);
@@ -73,7 +73,7 @@ public class Inspector {
 	}
 		
 	
-	public Vector<String> inspectInterfaces(Object obj, Class classObj) {
+	public Vector<String> inspectInterfaces(Class classObj) {
 		Vector v = new Vector();
 		Class[] interfaces = classObj.getInterfaces();
 		if (interfaces.length > 0) {
@@ -89,7 +89,7 @@ public class Inspector {
 		return v;	
 	}
 
-	public Vector<String> inspectMethods(Object obj, Class classObj) {
+	public Vector<String> inspectMethods(Class classObj) {
 		Vector m = new Vector();
 		Method[] methods = classObj.getDeclaredMethods();
 		System.out.println("The methods in " + classObj.getSimpleName() + " are: ");
@@ -108,11 +108,17 @@ public class Inspector {
 				System.out.print(i.getName());
 				m.add(i.getName());
 				//loop through exceptions
-				for (Class j : exception) { // fix this to say no exceptions
-					System.out.print(", Exception Name: ");
-					System.out.print(j.getName());
-					m.add(j.getName());
+				if(exception.length >0 ) {
+					for (Class j : exception) { // fix this to say no exceptions
+						System.out.print(", Exception Name: ");
+						System.out.print(j.getName());
+						m.add(j.getName());
+					}
 				}
+				else {
+					System.out.print(", No exceptions found");
+				}
+
 				System.out.print(", Parameter Types: ");
 				if(parameterTypes.length > 0) {
 					for (Class j : parameterTypes) {
@@ -134,7 +140,7 @@ public class Inspector {
 		}
 		return m;	
 	}
-	public Vector<String> inspectConstructors(Object obj, Class classObj) {
+	public Vector<String> inspectConstructors(Class classObj) {
 		Vector cons = new Vector();
 		System.out.println("\nThe constructors in " + classObj.getSimpleName() + " are: ");
 		Constructor[] constructors = classObj.getDeclaredConstructors();

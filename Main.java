@@ -4,7 +4,7 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		Inspector inspect = new Inspector(); 
-		ClassD a = new ClassD();
+		ClassB a = new ClassB();
 		inspect.inspect(a, true);
 
 	}

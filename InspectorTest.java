@@ -23,7 +23,7 @@ public class InspectorTest {
 	@Test
 	public void testInspectInterfaces() {
 		Class classObj = classAObj.getClass();
-		Vector <String> interfaces = testClass.inspectInterfaces(classAObj, classObj);
+		Vector <String> interfaces = testClass.inspectInterfaces(classObj);
 		// test to see if first interface in Class A is Serializable 
         assertEquals( interfaces.firstElement(), "java.io.Serializable");
         //check to see if second or last interface implemented is runnable 
@@ -33,7 +33,7 @@ public class InspectorTest {
 	@Test
 	public void testInspectedMethods() {
 		Class classObj = classAObj.getClass();
-		Vector <String> methods = testClass.inspectMethods(classAObj, classObj);
+		Vector <String> methods = testClass.inspectMethods(classObj);
 		// test to see if Method in class A is run
         assertEquals( methods.firstElement(), "run");
         //check to see if return type is void for run since it throws no exceptions
@@ -45,7 +45,7 @@ public class InspectorTest {
 	@Test
 	public void testInspectedContructors() {
 		Class classObj = classAObj.getClass();
-		Vector <String> constructors = testClass.inspectConstructors(classAObj, classObj);
+		Vector <String> constructors = testClass.inspectConstructors(classObj);
         // check to see if name of first constructor is ClassA
 		assertEquals( constructors.firstElement(), "a2.ClassA");
 		//check to see if second constructor takes an int as parameter
